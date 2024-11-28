@@ -405,6 +405,50 @@ targscore <- function(vectce,qnt=0.55,mult=0.1,maxtarg=150.0) { #
   return(list(result=result,scores=score,rp=rp))
 } # end of targscore
 
+#' @title targscoreconstref generates the HCR score for the fixed target PM
+#'
+#' @description targscoreconstref takes in a vector of cpue x years, where the
+#'     the years used are defined in hsargs as startCE and endCE, which for
+#'     Tasmania default to 1992:2012 and defines the targ for each sau.
+#'
+#' @param vectce the vector of cpue to be assessed
+#' @param realtarg the quantile of the reference period of cpue x years used as
+#'     the target. The default quantile = 0.55
+#' @param mult the multiplier on the bounds to expand them upwards and
+#'     downwards. default value = 1.1 = 10 percent increase and decrease
+#' @param maxtarg a meta-rule that sets an upper limit on the target cpue, the
+#'     default=150kg/hr
+#'
+#' @return a list of the final year's score, the internals to the calculations,
+#'     and he target and limit reference points
+#' @export
+#'
+#' @examples
+#' print("wait on suitable data")
+#' args(targscore)
+#' # vectce=40:140; qnt=0.55;mult=0.1; maxtarg=150.0
+targscoreconstref <- function(vectce,realtarg,mult=0.1,maxtarg=150.0) { #
+  nyr <- length(vectce)
+  actualtarg <- realtarg
+  if (realtarg > maxtarg) realtarg <- maxtarg
+  bounds <- round(extendrange(vectce,range(vectce,na.rm=TRUE),f=mult),3)
+  bounds[which(bounds < 0)] <- 0
+  low <- seq(bounds[1],realtarg,length=6)
+  high <- seq(realtarg,bounds[2],length=6)
+  xax <- c(low[1:5],high)
+  vars <- getlmcoef(0:5,xax[1:6])
+  score <- numeric(length(vectce))
+  pickl <- which(vectce <= realtarg)
+  score[pickl] <- vectce[pickl]*vars[2] + vars[1]
+  vars2 <- getlmcoef(5:10,xax[6:11])
+  pickh <- which(vectce >= realtarg)
+  score[pickh] <- vectce[pickh]*vars2[2] + vars2[1]
+  rp <- c(bounds[1],realtarg,bounds[2],actualtarg)
+  names(rp)=c("lower","target","upper","actualtarg")
+  result <- tail(score,1)
+  return(list(result=result,scores=score,rp=rp))
+} # end of targscoreconstref
+
 
 #' @title tasCatch extracts the catch data if required by the associated HS
 #'
