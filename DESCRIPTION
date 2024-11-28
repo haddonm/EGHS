@@ -1,7 +1,7 @@
 Package: EGHS
 Title: Example harvest control rules used with aMSEGuide to illustrate MSE
-Version: 0.0.1
-Date: 2024-11-28
+Version: 0.0.2
+Date: 2024-11-29
 Authors@R: c(person("Malcolm", "Haddon",  email = "malcolm.haddon@gmail.com", role = c("aut","cre")),
     person("Craig", "Mundy", email = "c.mundy@utas.edu.au", role = "aut"))
 Description: Provides a set of static functions used when implementing the

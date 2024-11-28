@@ -25,7 +25,7 @@ Harvest Control Rules differ from harvest strategies in that they literally take
 Two harvest control rules are provided:
 
 * Constant Catch _consthcr_, which, as its name suggests simply applies a constant aspirational catch to each sau across all projections. This is the simplest hcr.
-* Adaptive reference period, _mcdahcr_, which reflects the original HCR used in Tasmania (Bradshaw, 2018), where the reference period used to generate CPUE targets increases as the years of projection increase. This is a much more complex empirical harvest strategy, especially when including the three meta-rules that are used to tune the outcome of the hcr to more closely match the objectives of the harvest strategy (HS).
+* Constant reference period, _constantrefhcr_, where the reference period used to generate CPUE targets is a fixed series defined in the _hsargs_ argument. This is a more complex empirical harvest strategy, especially when including the three meta-rules that are used to tune the outcome of the hcr to more closely match the objectives of the harvest strategy (HS).
 
 ## Installation
 

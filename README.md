@@ -24,13 +24,12 @@ Two harvest control rules are provided:
 - Constant Catch *consthcr*, which, as its name suggests simply applies
   a constant aspirational catch to each sau across all projections. This
   is the simplest hcr.
-- Adaptive reference period, *mcdahcr*, which reflects the original HCR
-  used in Tasmania (Bradshaw, 2018), where the reference period used to
-  generate CPUE targets increases as the years of projection increase.
-  This is a much more complex empirical harvest strategy, especially
-  when including the three meta-rules that are used to tune the outcome
-  of the hcr to more closely match the objectives of the harvest
-  strategy (HS).
+- Constant reference period, *constantrefhcr*, where the reference
+  period used to generate CPUE targets is a fixed series defined in the
+  *hsargs* argument. This is a more complex empirical harvest strategy,
+  especially when including the three meta-rules that are used to tune
+  the outcome of the hcr to more closely match the objectives of the
+  harvest strategy (HS).
 
 ## Installation
 
@@ -47,6 +46,5 @@ pak::pak("haddonm/EGHS")
 ``` r
 library(EGHS)
 ?EGHS
-#> No documentation for 'EGHS' in specified packages and libraries:
-#> you could try '??EGHS'
+#> starting httpd help server ... done
 ```
