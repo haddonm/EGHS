@@ -8,26 +8,64 @@
 #'
 #' @param x the hsargs object
 #'
-#' @return nothing 
+#' @return the original hsargs is returned invisibly 
 #' @export
 #'
 #' @examples
 #' print("wait on data")
-checkhsargs <- function(x) {
-  if (x$hcrname %in% c("mcdahcr","constantrefhcr","consthcr")) {
+checkhsargs <- function(x) {   #  x=hsargs
+  if (x$hcrname %in% c("mcdahcr","constantrefhcr","consthcr","constrefhcr")) {
     cat("The hcr being used is: ",x$hcrname,"\n")
   } else {
     stop("Unknown hcr being used. \n")
-  }
-  if (x$metRunder > 0) {
-    cat("meta-rule 2 is being used \n")
-  }
-  if (x$metRover > 0) {
-    cat("meta-rule 1 is being used \n")
   } 
-  if (x$pmwtSwitch > 0) {
-    cat("meta-rule 3 is being used \n")
-    if (sum(x$stablewts) != 1.0) cat("stablewts sum is not equal to 1! \n")
+  if ((x$hcrname == "constrefhcr")) {
+    cat("All metarules assumed to be used  \n")
+    if ((sum(x$stablewts) != 1.0) | (sum(x$pmwts) != 1.0)) {
+      cat("stablewts or pmwts sum is not equal to 1! \n")
+    } else {
+      cat("stablewts and pmwts both sum to 1. \n")
+    }
+    if (!is.null(x$msyproxy)) {
+      cat("msyproxy sums to ",round(sum(x$msyproxy),3),"\n")
+    } else {
+      cat("No msyproxy defined  \n")
+    }  
+    if ((is.null(x$mr1wts)) | (is.null(x$mr2over)) | (is.null(x$mr3under))) {
+      cat("WRONG hsargs BEING USED WITH constrefhcr  \n")
+      #  x$mr1wts <- NA; x$mr2over <- NA; x$mr3under <- NA
+      x$mr1wts = 4
+      x$mr2over = 2
+      x$mr3under = 2
+      x$lmlyear = 0
+      if (is.null(x$hcrm1)) x$hcrm1 <- x$hcrm3
+      cat("hsargs$mr1wts = 4, hsargs$mr2over = 2, hsargs$mr3under = 2 and  \n")
+      cat("hsargs$lmlyear = 0, and hcrm1 = hcrm3 if needed have been added  \n")
+    }
+  }
+  if ((x$hcrname == "constantrefhcr") | (x$hcrname == "mcdahcr")) {
+    if (length(grep("metRunder",names(x)) > 0)) {
+      #   warning(cat("metRunder is deprecated, use mr3under \n"))
+      x$mr3under <- x$metRunder
+    }
+    if (x$mr3under > 0) {
+      cat("meta-rule 2 is being used \n")
+    }
+    if (length(grep("metRover",names(x)) > 0)) {
+      #   warning(cat("metRover is deprecated, use mr2over \n"))
+      x$mr2over <- x$metRover
+    }
+    if (x$mr2over > 0) {
+      cat("meta-rule 1 is being used \n")
+    } 
+    if (length(grep("pmwtSwitch",names(x)) > 0)) {
+      #   warning(cat("pmwtSwitch is deprecated, use mr1wts \n"))
+      x$mr1wts <- x$pmwtSwitch
+    }
+    if (x$mr1wts > 0) {
+      cat("meta-rule 3 is being used \n")
+      if (sum(x$stablewts) != 1.0) cat("stablewts sum is not equal to 1! \n")
+    }
   }
   if (x$hcrname == "mcdahcr") {
     cat("An adaptive reference period is in use  \n")
@@ -42,8 +80,10 @@ checkhsargs <- function(x) {
                      "the reference periods for each sau \n")
       cat(text,"\n")
     }
-  }  
+  }
+  return(invisible(x))
 } # end of checkhsargs
+
 
 #' @title plotfinalscores plots projected catches, cpue, PMs, and final score
 #'
